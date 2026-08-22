@@ -6,12 +6,26 @@ import { motion } from 'framer-motion';
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || 'All';
+  const searchQuery = searchParams.get('search') || '';
   const [activeCategory, setActiveCategory] = useState(initialCategory);
 
   const filteredProducts = useMemo(() => {
-    if (activeCategory === 'All') return mockProducts;
-    return mockProducts.filter(p => p.category === activeCategory);
-  }, [activeCategory]);
+    let result = mockProducts;
+    
+    if (activeCategory !== 'All') {
+      result = result.filter(p => p.category === activeCategory);
+    }
+    
+    if (searchQuery) {
+      const lowerQuery = searchQuery.toLowerCase();
+      result = result.filter(p => 
+        p.name.toLowerCase().includes(lowerQuery) || 
+        p.description.toLowerCase().includes(lowerQuery)
+      );
+    }
+    
+    return result;
+  }, [activeCategory, searchQuery]);
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
@@ -33,11 +47,13 @@ const Shop = () => {
             animate={{ opacity: 1, y: 0 }}
             className="text-4xl md:text-5xl font-serif font-bold text-text mb-4"
           >
-            The Collection
+            {searchQuery ? `Search Results for "${searchQuery}"` : 'The Collection'}
           </motion.h1>
-          <p className="text-gray-500 font-light max-w-2xl mx-auto">
-            Explore our curated selection of luxury items, designed for those with an uncompromising taste for excellence.
-          </p>
+          {!searchQuery && (
+            <p className="text-gray-500 font-light max-w-2xl mx-auto">
+              Explore our curated selection of luxury items, designed for those with an uncompromising taste for excellence.
+            </p>
+          )}
         </header>
 
         {/* Filters */}

@@ -87,9 +87,9 @@ const Cart = () => {
                   <span className="font-bold text-2xl text-accent">${total.toLocaleString()}</span>
                 </div>
                 
-                <button className="w-full bg-text text-white py-4 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium">
+                <Link to="/checkout" className="block w-full text-center bg-text text-white py-4 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium">
                   Proceed to Checkout
-                </button>
+                </Link>
               </div>
             </div>
             

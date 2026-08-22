@@ -26,28 +26,34 @@ function SearchBar({ isVisible, onClose }) {
     onClose();
   };
 
+  const handleSearch = (e) => {
+    if (e.key === 'Enter' && searchText.trim()) {
+      navigate(`/shop?search=${encodeURIComponent(searchText.trim())}`);
+      onClose();
+    }
+  };
+
   return (
-    <div className="flex items-center">
-      <button onClick={onClose}><MagnifyingGlassIcon className="h-6 w-6" /></button>
-      <div
-        ref={searchBarRef}
-        className={clsx(
-          "absolute top-1/2 -translate-y-1/2 right-0 flex items-center gap-3 px-4 py-2 bg-white shadow-lg transition-all duration-300 origin-right z-50",
-          { 'scale-x-100 opacity-100': isVisible, 'scale-x-0 opacity-0': !isVisible }
-        )}
-      >
-        <MagnifyingGlassIcon className="h-5 w-5 text-gray-400" />
+    <div className="absolute inset-0 bg-white z-50 flex items-center justify-center shadow-md">
+      <div className="max-w-4xl w-full px-4 flex items-center gap-4">
+        <MagnifyingGlassIcon className="h-6 w-6 text-gray-400" />
         <input
           ref={inputRef}
           type="text"
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
-          placeholder="Search..."
-          className="w-[30vw] min-w-[200px] border-none outline-none text-base bg-transparent text-gray-800"
+          onKeyDown={handleSearch}
+          placeholder="Search for products, categories..."
+          className="flex-1 border-none outline-none text-xl bg-transparent text-text font-light"
         />
-        <button onClick={() => setSearchText("")} className="text-gray-600 text-sm">Clear</button>
-        <button onClick={onClose}><XMarkIcon className="h-5 w-5 text-gray-600" /></button>
-        {/* Suggestions would be rendered here based on searchText */}
+        {searchText && (
+          <button onClick={() => setSearchText("")} className="text-gray-400 hover:text-text transition-colors text-sm uppercase tracking-widest mr-4">
+            Clear
+          </button>
+        )}
+        <button onClick={onClose} className="text-gray-400 hover:text-text transition-colors">
+          <XMarkIcon className="h-8 w-8" />
+        </button>
       </div>
     </div>
   );

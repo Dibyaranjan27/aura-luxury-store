@@ -1,10 +1,14 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bars3Icon, ShoppingCartIcon, XMarkIcon, UserIcon, HeartIcon } from '@heroicons/react/24/outline';
+import { Bars3Icon, ShoppingCartIcon, XMarkIcon, UserIcon, HeartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
 import { motion, AnimatePresence } from 'framer-motion';
+import AuthDrawer from '../Auth/AuthDrawer';
+import SearchBar from './SearchBar';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isSearchVisible, setIsSearchVisible] = useState(false);
   const location = useLocation();
 
   const toggleMenu = () => setIsOpen(!isOpen);
@@ -43,13 +47,16 @@ function Navbar() {
           </div>
 
           {/* Icons */}
-          <div className="hidden md:flex items-center space-x-6">
-            <button className="text-gray-500 hover:text-text transition-colors">
+          <div className="hidden md:flex items-center space-x-6 relative">
+            <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
+              <MagnifyingGlassIcon className="h-6 w-6" title="Search" />
+            </button>
+            <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
               <UserIcon className="h-6 w-6" title="Sign In / Register" />
             </button>
-            <button className="text-gray-500 hover:text-text transition-colors">
+            <Link to="/wishlist" className="text-gray-500 hover:text-text transition-colors">
               <HeartIcon className="h-6 w-6" title="Wishlist" />
-            </button>
+            </Link>
             <Link to="/cart" className="text-gray-500 hover:text-text transition-colors relative">
               <ShoppingCartIcon className="h-6 w-6" />
             </Link>
@@ -57,7 +64,7 @@ function Navbar() {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-4">
-            <button className="text-gray-500 hover:text-text transition-colors">
+            <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
               <UserIcon className="h-6 w-6" />
             </button>
             <Link to="/cart" className="text-gray-500 hover:text-text transition-colors">
@@ -103,6 +110,9 @@ function Navbar() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <AuthDrawer isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
+      {isSearchVisible && <SearchBar isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />}
     </nav>
   );
 }

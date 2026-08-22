@@ -2,11 +2,15 @@ import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { mockProducts } from '../data/mockData';
 import { motion } from 'framer-motion';
+import useWishlistStore from '../store/wishlistStore';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  
+  const { items, addItem, removeItem } = useWishlistStore();
+  const isInWishlist = product && items.some(item => item.id === product.id);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -84,10 +88,21 @@ const ProductDetail = () => {
                 className="flex-1 bg-text text-white py-4 px-8 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium"
                 onClick={() => {
                   alert('Added to cart!');
-                  // Typically you'd dispatch to a cart store here
                 }}
               >
                 Add to Cart
+              </button>
+              <button 
+                className="w-14 h-14 border border-gray-200 flex items-center justify-center hover:border-text transition-colors duration-300"
+                onClick={() => {
+                  if (isInWishlist) removeItem(product.id);
+                  else addItem(product);
+                }}
+                title="Toggle Wishlist"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" fill={isInWishlist ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 ${isInWishlist ? "text-accent" : "text-gray-500"}`}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                </svg>
               </button>
             </div>
             
@@ -102,6 +117,24 @@ const ProductDetail = () => {
 
           </motion.div>
         </div>
+        
+        {/* Reviews Section */}
+        <div className="mt-32 pt-16 border-t border-gray-200">
+          <h2 className="text-2xl font-serif text-text mb-12 text-center">Client Reviews</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-12 max-w-4xl mx-auto">
+            <div className="bg-primary p-8 text-center">
+              <div className="text-accent text-lg mb-4">★★★★★</div>
+              <p className="text-gray-600 font-light italic mb-6">"Absolutely stunning piece. The craftsmanship exceeds expectations. It has become my everyday essential."</p>
+              <p className="text-sm font-medium uppercase tracking-widest text-text">- Eleanor R.</p>
+            </div>
+            <div className="bg-primary p-8 text-center">
+              <div className="text-accent text-lg mb-4">★★★★★</div>
+              <p className="text-gray-600 font-light italic mb-6">"Aura never disappoints. The packaging was immaculate and the product itself is a true work of art."</p>
+              <p className="text-sm font-medium uppercase tracking-widest text-text">- James T.</p>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   );
