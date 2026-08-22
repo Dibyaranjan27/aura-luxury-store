@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useAuth } from '../../../contexts/AuthContext';
+import { X } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
 
 const AuthDrawer = ({ isOpen, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
@@ -43,7 +43,7 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                 {isLoggedIn ? 'MY ACCOUNT' : (isLogin ? 'SIGN IN' : 'REGISTER')}
               </h2>
               <button onClick={onClose} className="text-gray-500 hover:text-text transition-colors">
-                <XMarkIcon className="h-6 w-6" />
+                <X className="h-6 w-6" strokeWidth={1.5} />
               </button>
             </div>
 
