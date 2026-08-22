@@ -1,5 +1,6 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext.jsx"; // Import the AuthProvider
+import { MessageCircle } from "lucide-react";
 import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -73,6 +74,14 @@ function App() {
               </div>
             </div>
           </footer>
+          {/* Live Chat Floating Button */}
+          <button 
+            onClick={() => alert('Live Chat would open here')}
+            className="fixed bottom-8 right-8 z-50 bg-text text-white p-4 rounded-full shadow-2xl hover:bg-accent transition-colors duration-300"
+            title="Need Help?"
+          >
+            <MessageCircle className="h-6 w-6" strokeWidth={1.5} />
+          </button>
         </div>
       </Router>
     </AuthProvider>

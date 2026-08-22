@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams, useNavigate, Link } from 'react-router-dom';
 import { mockProducts } from '../data/mockData';
 import { motion } from 'framer-motion';
 import useWishlistStore from '../store/wishlistStore';
@@ -132,6 +132,31 @@ const ProductDetail = () => {
               <p className="text-gray-600 font-light italic mb-6">"Aura never disappoints. The packaging was immaculate and the product itself is a true work of art."</p>
               <p className="text-sm font-medium uppercase tracking-widest text-text">- James T.</p>
             </div>
+          </div>
+        </div>
+
+        {/* Related Products */}
+        <div className="mt-24 border-t border-gray-200 pt-16">
+          <h2 className="text-2xl font-serif text-text mb-10 text-center">You May Also Like</h2>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+            {mockProducts
+              .filter(p => p.category === product.category && p.id !== product.id)
+              .slice(0, 4)
+              .map(related => (
+                <Link to={`/product/${related.id}`} key={related.id} className="group block">
+                  <div className="relative h-64 overflow-hidden bg-primary mb-4">
+                    <img 
+                      src={related.image} 
+                      alt={related.name} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                  </div>
+                  <div className="text-center">
+                    <h3 className="font-serif text-sm text-text mb-1 line-clamp-1">{related.name}</h3>
+                    <p className="text-sm font-medium text-accent">${related.price.toLocaleString()}</p>
+                  </div>
+                </Link>
+              ))}
           </div>
         </div>
 

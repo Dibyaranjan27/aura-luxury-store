@@ -49,14 +49,39 @@ const AuthDrawer = ({ isOpen, onClose }) => {
 
             <div className="p-8 flex-1 overflow-y-auto">
               {isLoggedIn ? (
-                <div className="flex flex-col gap-6">
-                  <p className="text-gray-600 font-light">Welcome back to Aura.</p>
-                  <button 
-                    onClick={() => { logOut(); onClose(); }}
-                    className="w-full bg-text text-white py-3 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium text-sm"
-                  >
-                    Sign Out
-                  </button>
+                <div className="flex flex-col gap-8 h-full">
+                  <div>
+                    <p className="text-gray-600 font-light mb-6">Welcome back, Client.</p>
+                    <ul className="space-y-4">
+                      <li>
+                        <button className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
+                          Order History
+                          <span className="text-gray-400">&rarr;</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
+                          Account Settings
+                          <span className="text-gray-400">&rarr;</span>
+                        </button>
+                      </li>
+                      <li>
+                        <button className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
+                          Address Book
+                          <span className="text-gray-400">&rarr;</span>
+                        </button>
+                      </li>
+                    </ul>
+                  </div>
+
+                  <div className="mt-auto pt-8 border-t border-gray-100">
+                    <button 
+                      onClick={() => { logOut(); onClose(); }}
+                      className="w-full bg-transparent border border-text text-text py-3 uppercase tracking-widest hover:bg-text hover:text-white transition-colors duration-300 font-medium text-sm"
+                    >
+                      Sign Out
+                    </button>
+                  </div>
                 </div>
               ) : (
                 <>

@@ -123,6 +123,30 @@ const Home = () => {
           </button>
         </form>
       </section>
+
+      {/* Testimonials */}
+      <section className="py-24 bg-primary text-center">
+        <div className="max-w-4xl mx-auto px-4">
+          <h2 className="font-serif text-3xl text-text mb-12">Client Experiences</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="p-6">
+              <div className="text-accent text-lg mb-4">★★★★★</div>
+              <p className="text-gray-600 font-light italic mb-4">"The attention to detail and quality of the materials is unparalleled. Truly a luxury experience."</p>
+              <p className="text-sm font-medium uppercase tracking-widest text-text">- Sophia L.</p>
+            </div>
+            <div className="p-6">
+              <div className="text-accent text-lg mb-4">★★★★★</div>
+              <p className="text-gray-600 font-light italic mb-4">"Impeccable service. My order arrived beautifully packaged and the product exceeded my expectations."</p>
+              <p className="text-sm font-medium uppercase tracking-widest text-text">- Marcus W.</p>
+            </div>
+            <div className="p-6">
+              <div className="text-accent text-lg mb-4">★★★★★</div>
+              <p className="text-gray-600 font-light italic mb-4">"Aura has become my definitive destination for luxury accessories. Their curation is flawless."</p>
+              <p className="text-sm font-medium uppercase tracking-widest text-text">- Elena R.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
   );
 };
