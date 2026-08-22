@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { Bars3Icon, ShoppingCartIcon, XMarkIcon, UserIcon, HeartIcon, MagnifyingGlassIcon } from '@heroicons/react/24/outline';
+import { Menu, ShoppingBag, X, User, Heart, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuthDrawer from '../Auth/AuthDrawer';
 import SearchBar from './SearchBar';
@@ -49,35 +49,38 @@ function Navbar() {
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-6 relative">
             <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
-              <MagnifyingGlassIcon className="h-6 w-6" title="Search" />
+              <Search className="h-5 w-5" title="Search" strokeWidth={1.5} />
             </button>
             <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
-              <UserIcon className="h-6 w-6" title="Sign In / Register" />
+              <User className="h-5 w-5" title="Sign In / Register" strokeWidth={1.5} />
             </button>
             <Link to="/wishlist" className="text-gray-500 hover:text-text transition-colors">
-              <HeartIcon className="h-6 w-6" title="Wishlist" />
+              <Heart className="h-5 w-5" title="Wishlist" strokeWidth={1.5} />
             </Link>
             <Link to="/cart" className="text-gray-500 hover:text-text transition-colors relative">
-              <ShoppingCartIcon className="h-6 w-6" />
+              <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
             </Link>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-4">
+            <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
+              <Search className="h-5 w-5" strokeWidth={1.5} />
+            </button>
             <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
-              <UserIcon className="h-6 w-6" />
+              <User className="h-5 w-5" strokeWidth={1.5} />
             </button>
             <Link to="/cart" className="text-gray-500 hover:text-text transition-colors">
-              <ShoppingCartIcon className="h-6 w-6" />
+              <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
             </Link>
             <button
               onClick={toggleMenu}
               className="text-gray-500 hover:text-text focus:outline-none"
             >
               {isOpen ? (
-                <XMarkIcon className="h-7 w-7" />
+                <X className="h-6 w-6" strokeWidth={1.5} />
               ) : (
-                <Bars3Icon className="h-7 w-7" />
+                <Menu className="h-6 w-6" strokeWidth={1.5} />
               )}
             </button>
           </div>
@@ -106,6 +109,15 @@ function Navbar() {
                   {link.name}
                 </Link>
               ))}
+              <Link
+                to="/wishlist"
+                onClick={() => setIsOpen(false)}
+                className={`block px-3 py-4 text-base uppercase tracking-widest text-center ${
+                  location.pathname === '/wishlist' ? 'text-accent font-medium' : 'text-gray-600'
+                }`}
+              >
+                Wishlist
+              </Link>
             </div>
           </motion.div>
         )}

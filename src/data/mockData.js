@@ -45,7 +45,7 @@ export const mockProducts = [
     category: "Shoes",
     price: 850,
     description: "Classic men's oxfords handmade by master cobblers, featuring a polished finish.",
-    image: "https://images.unsplash.com/photo-1614252209844-7833a5538e1a?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?auto=format&fit=crop&q=80&w=1000",
     features: ["Handcrafted leather", "Leather sole", "Classic lace-up"],
     isBestSeller: false
   },
@@ -75,9 +75,49 @@ export const mockProducts = [
     category: "Jewelry",
     price: 1800,
     description: "A delicate rose gold chain featuring a mesmerizing teardrop pendant.",
-    image: "https://images.unsplash.com/photo-1599643477874-5c866f5c5c01?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&q=80&w=1000",
     features: ["14k Rose Gold", "Lobster clasp", "Adjustable length"],
     isBestSeller: false
+  },
+  {
+    id: "9",
+    name: "Chronograph Steel Watch",
+    category: "Watches",
+    price: 12500,
+    description: "Precision engineered chronograph with a stainless steel bracelet and sapphire crystal.",
+    image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?auto=format&fit=crop&q=80&w=1000",
+    features: ["Automatic movement", "Water resistant to 100m", "Sapphire crystal"],
+    isBestSeller: true
+  },
+  {
+    id: "10",
+    name: "Quilted Leather Clutch",
+    category: "Bags",
+    price: 2450,
+    description: "Elegant quilted leather evening clutch featuring a signature gold-tone chain strap.",
+    image: "https://images.unsplash.com/photo-1584916201218-f4242ceb4809?auto=format&fit=crop&q=80&w=1000",
+    features: ["Lambskin leather", "Gold-tone hardware", "Magnetic closure"],
+    isBestSeller: false
+  },
+  {
+    id: "11",
+    name: "Silk Evening Gown",
+    category: "Clothing",
+    price: 3200,
+    description: "Flowing silk evening gown with a subtle sweetheart neckline and dramatic train.",
+    image: "https://images.unsplash.com/photo-1566150905458-1bf1fc113f0d?auto=format&fit=crop&q=80&w=1000",
+    features: ["100% Silk", "Dry clean only", "Made in Italy"],
+    isBestSeller: false
+  },
+  {
+    id: "12",
+    name: "Diamond Stud Earrings",
+    category: "Jewelry",
+    price: 4100,
+    description: "Brilliant cut diamond stud earrings set in classic platinum prongs.",
+    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1000",
+    features: ["Platinum setting", "2.0 Carat Total Weight", "Conflict-free diamonds"],
+    isBestSeller: true
   }
 ];
 
