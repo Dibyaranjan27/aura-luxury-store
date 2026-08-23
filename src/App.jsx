@@ -95,17 +95,17 @@ function App() {
           {showScrollTop && (
             <button 
               onClick={scrollToTop}
-              className="fixed bottom-24 right-8 z-50 bg-white border border-gray-200 text-text p-3 rounded-full shadow-lg hover:bg-primary transition-colors duration-300"
+              className="fixed bottom-[104px] right-8 z-50 bg-white border border-gray-200 text-text w-14 h-14 flex items-center justify-center rounded-full shadow-lg hover:bg-primary transition-colors duration-300"
               title="Scroll to Top"
             >
-              <ChevronUp className="h-5 w-5" strokeWidth={1.5} />
+              <ChevronUp className="h-6 w-6" strokeWidth={1.5} />
             </button>
           )}
 
           {/* Live Chat Floating Button */}
           <button 
             onClick={() => alert('Live Chat would open here')}
-            className="fixed bottom-8 right-8 z-50 bg-text text-white p-4 rounded-full shadow-2xl hover:bg-accent transition-colors duration-300"
+            className="fixed bottom-8 right-8 z-50 bg-text text-white w-14 h-14 flex items-center justify-center rounded-full shadow-2xl hover:bg-accent transition-colors duration-300"
             title="Need Help?"
           >
             <MessageCircle className="h-6 w-6" strokeWidth={1.5} />

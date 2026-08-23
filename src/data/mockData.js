@@ -155,7 +155,7 @@ export const mockProducts = [
     category: "Jewelry",
     price: 8500,
     description: "Stunning cocktail ring featuring a deep blue cushion-cut sapphire surrounded by diamonds.",
-    image: "https://images.unsplash.com/photo-1605100804763-247f67b8548e?auto=format&fit=crop&q=80&w=1000",
+    image: "https://images.unsplash.com/photo-1596944924616-7b38e7cfac36?auto=format&fit=crop&q=80&w=1000",
     features: ["18k White Gold", "4.5ct Sapphire", "Pave diamond halo"],
     isBestSeller: false
   },
