@@ -10,6 +10,7 @@ const Shop = () => {
   const searchQuery = searchParams.get('search') || '';
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
+  const [sortBy, setSortBy] = useState('featured');
 
   const filteredProducts = useMemo(() => {
     let result = mockProducts;
@@ -26,8 +27,16 @@ const Shop = () => {
       );
     }
     
+    if (sortBy === 'price-low') {
+      result = [...result].sort((a, b) => a.price - b.price);
+    } else if (sortBy === 'price-high') {
+      result = [...result].sort((a, b) => b.price - a.price);
+    } else if (sortBy === 'newest') {
+      result = [...result].reverse();
+    }
+
     return result;
-  }, [activeCategory, searchQuery]);
+  }, [activeCategory, searchQuery, sortBy]);
 
   const handleCategoryChange = (category) => {
     setActiveCategory(category);
@@ -58,21 +67,37 @@ const Shop = () => {
           )}
         </header>
 
-        {/* Filters */}
-        <div className="flex flex-wrap justify-center gap-4 mb-12">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => handleCategoryChange(cat)}
-              className={`px-6 py-2 text-sm uppercase tracking-widest transition-colors duration-300 ${
-                activeCategory === cat 
-                  ? 'bg-text text-white' 
-                  : 'bg-white text-text border border-gray-200 hover:border-text hover:bg-gray-50'
-              }`}
+        {/* Filters and Sorting */}
+        <div className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+          <div className="flex flex-wrap justify-center gap-4">
+            {categories.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => handleCategoryChange(cat)}
+                className={`px-6 py-2 text-sm uppercase tracking-widest transition-colors duration-300 ${
+                  activeCategory === cat 
+                    ? 'bg-text text-white' 
+                    : 'bg-white text-text border border-gray-200 hover:border-text hover:bg-gray-50'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-4">
+            <span className="text-sm uppercase tracking-widest text-gray-500">Sort By</span>
+            <select
+              value={sortBy}
+              onChange={(e) => setSortBy(e.target.value)}
+              className="bg-transparent border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none focus:border-text text-text font-light"
             >
-              {cat}
-            </button>
-          ))}
+              <option value="featured">Featured</option>
+              <option value="newest">Newest Arrivals</option>
+              <option value="price-high">Price: High to Low</option>
+              <option value="price-low">Price: Low to High</option>
+            </select>
+          </div>
         </div>
 
         {/* Product Grid */}

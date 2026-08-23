@@ -56,24 +56,24 @@ const Checkout = () => {
               <h2 className="text-lg font-serif mb-6">Shipping Address</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">First Name</label>
-                  <input type="text" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">First Name *</label>
+                  <input type="text" id="firstName" name="firstName" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required minLength={2} />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Last Name</label>
-                  <input type="text" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Last Name *</label>
+                  <input type="text" id="lastName" name="lastName" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required minLength={2} />
                 </div>
                 <div className="md:col-span-2">
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Address</label>
-                  <input type="text" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Address *</label>
+                  <input type="text" id="address" name="address" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required minLength={5} />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">City</label>
-                  <input type="text" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">City *</label>
+                  <input type="text" id="city" name="city" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Postal Code</label>
-                  <input type="text" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Postal Code *</label>
+                  <input type="text" id="postal" name="postal" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required pattern="[0-9]{5}" title="Five digit zip code" />
                 </div>
               </div>
             </motion.div>
@@ -84,16 +84,16 @@ const Checkout = () => {
               <h2 className="text-lg font-serif mb-6">Payment Details</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="md:col-span-2">
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Card Number</label>
-                  <input type="text" placeholder="XXXX XXXX XXXX XXXX" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Card Number *</label>
+                  <input type="text" id="card" name="card" placeholder="XXXX XXXX XXXX XXXX" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required pattern="[0-9]{16}" title="16 digit card number" />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Expiry Date</label>
-                  <input type="text" placeholder="MM/YY" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">Expiry Date *</label>
+                  <input type="text" id="expiry" name="expiry" placeholder="MM/YY" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required pattern="(0[1-9]|1[0-2])\/[0-9]{2}" title="MM/YY format" />
                 </div>
                 <div>
-                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">CVC</label>
-                  <input type="text" placeholder="123" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required />
+                  <label className="block text-xs uppercase tracking-widest text-gray-500 mb-2">CVC *</label>
+                  <input type="text" id="cvc" name="cvc" placeholder="123" className="w-full border-b border-gray-300 py-2 focus:outline-none focus:border-text transition-colors font-light bg-transparent" required pattern="[0-9]{3,4}" title="3 or 4 digit CVC" />
                 </div>
               </div>
             </motion.div>
