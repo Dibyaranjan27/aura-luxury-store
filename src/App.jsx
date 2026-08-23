@@ -1,6 +1,7 @@
 import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { AuthProvider } from "./contexts/AuthContext.jsx"; // Import the AuthProvider
-import { MessageCircle } from "lucide-react";
+import { MessageCircle, ChevronUp } from "lucide-react";
 import Navbar from './components/Navbar/Navbar';
 import Home from './pages/Home';
 import Shop from './pages/Shop';
@@ -9,8 +10,23 @@ import Cart from './pages/Cart';
 import About from './pages/About';
 import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
+import Account from './pages/Account';
 
 function App() {
+  const [showScrollTop, setShowScrollTop] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowScrollTop(window.scrollY > 400);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <AuthProvider>
       <Router>
@@ -25,6 +41,7 @@ function App() {
               <Route path="/about" element={<About />} />
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/checkout" element={<Checkout />} />
+              <Route path="/account" element={<Account />} />
             </Routes>
           </main>
           
@@ -74,10 +91,21 @@ function App() {
               </div>
             </div>
           </footer>
+          {/* Scroll To Top Button */}
+          {showScrollTop && (
+            <button 
+              onClick={scrollToTop}
+              className="fixed bottom-[104px] right-8 z-40 bg-white border border-gray-200 text-text w-14 h-14 flex items-center justify-center rounded-full shadow-lg hover:bg-primary transition-colors duration-300"
+              title="Scroll to Top"
+            >
+              <ChevronUp className="h-6 w-6" strokeWidth={1.5} />
+            </button>
+          )}
+
           {/* Live Chat Floating Button */}
           <button 
             onClick={() => alert('Live Chat would open here')}
-            className="fixed bottom-8 right-8 z-50 bg-text text-white p-4 rounded-full shadow-2xl hover:bg-accent transition-colors duration-300"
+            className="fixed bottom-8 right-8 z-40 bg-text text-white w-14 h-14 flex items-center justify-center rounded-full shadow-2xl hover:bg-accent transition-colors duration-300"
             title="Need Help?"
           >
             <MessageCircle className="h-6 w-6" strokeWidth={1.5} />

@@ -2,10 +2,12 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useAuth } from '../../contexts/AuthContext';
+import { useNavigate, Link } from 'react-router-dom';
 
 const AuthDrawer = ({ isOpen, onClose }) => {
   const [isLogin, setIsLogin] = useState(true);
-  const { isLoggedIn, logOut } = useAuth(); // Assume we will mock login later
+  const { isLoggedIn, logOut, logIn } = useAuth(); // Assume we will mock login later
+  const navigate = useNavigate();
 
   // Simplified form state for mock purposes
   const [email, setEmail] = useState('');
@@ -13,8 +15,9 @@ const AuthDrawer = ({ isOpen, onClose }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    alert(isLogin ? `Mock Login for ${email}` : `Mock Register for ${email}`);
+    logIn();
     onClose();
+    navigate('/account');
   };
 
   return (
@@ -54,29 +57,29 @@ const AuthDrawer = ({ isOpen, onClose }) => {
                     <p className="text-gray-600 font-light mb-6">Welcome back, Client.</p>
                     <ul className="space-y-4">
                       <li>
-                        <button className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
+                        <Link to="/account" onClick={onClose} className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
+                          Account Dashboard
+                          <span className="text-gray-400">&rarr;</span>
+                        </Link>
+                      </li>
+                      <li>
+                        <Link to="/account" onClick={onClose} className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
                           Order History
                           <span className="text-gray-400">&rarr;</span>
-                        </button>
+                        </Link>
                       </li>
                       <li>
-                        <button className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
-                          Account Settings
+                        <Link to="/account" onClick={onClose} className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
+                          Saved Addresses
                           <span className="text-gray-400">&rarr;</span>
-                        </button>
-                      </li>
-                      <li>
-                        <button className="text-left w-full border-b border-gray-100 pb-3 text-sm uppercase tracking-widest text-text hover:text-accent transition-colors flex justify-between items-center">
-                          Address Book
-                          <span className="text-gray-400">&rarr;</span>
-                        </button>
+                        </Link>
                       </li>
                     </ul>
                   </div>
 
                   <div className="mt-auto pt-8 border-t border-gray-100">
                     <button 
-                      onClick={() => { logOut(); onClose(); }}
+                      onClick={() => { logOut(); onClose(); navigate('/'); }}
                       className="w-full bg-transparent border border-text text-text py-3 uppercase tracking-widest hover:bg-text hover:text-white transition-colors duration-300 font-medium text-sm"
                     >
                       Sign Out

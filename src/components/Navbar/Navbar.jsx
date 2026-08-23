@@ -3,11 +3,13 @@ import { Link, useLocation } from 'react-router-dom';
 import { Menu, ShoppingBag, X, User, Heart, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuthDrawer from '../Auth/AuthDrawer';
+import CartDrawer from '../Cart/CartDrawer';
 import SearchBar from './SearchBar';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
+  const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const location = useLocation();
 
@@ -57,9 +59,9 @@ function Navbar() {
             <Link to="/wishlist" className="text-gray-500 hover:text-text transition-colors">
               <Heart className="h-5 w-5" title="Wishlist" strokeWidth={1.5} />
             </Link>
-            <Link to="/cart" className="text-gray-500 hover:text-text transition-colors relative">
+            <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors relative">
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
-            </Link>
+            </button>
           </div>
 
           {/* Mobile menu button */}
@@ -70,9 +72,9 @@ function Navbar() {
             <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
               <User className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <Link to="/cart" className="text-gray-500 hover:text-text transition-colors">
+            <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors">
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
-            </Link>
+            </button>
             <button
               onClick={toggleMenu}
               className="text-gray-500 hover:text-text focus:outline-none"
@@ -123,8 +125,12 @@ function Navbar() {
         )}
       </AnimatePresence>
 
-      <AuthDrawer isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />
-      {isSearchVisible && <SearchBar isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />}
+      {/* Modals & Drawers */}
+      <AnimatePresence>
+        {isAuthOpen && <AuthDrawer isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />}
+        {isCartOpen && <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />}
+        {isSearchVisible && <SearchBar isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />}
+      </AnimatePresence>
     </nav>
   );
 }
