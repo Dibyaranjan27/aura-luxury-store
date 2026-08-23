@@ -1,8 +1,8 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
 import { mockProducts, categories } from '../data/mockData';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X } from 'lucide-react';
+import { X, ChevronDown } from 'lucide-react';
 
 const Shop = () => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -11,6 +11,18 @@ const Shop = () => {
   const [activeCategory, setActiveCategory] = useState(initialCategory);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [sortBy, setSortBy] = useState('featured');
+  const [isSortOpen, setIsSortOpen] = useState(false);
+  const sortRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (sortRef.current && !sortRef.current.contains(e.target)) {
+        setIsSortOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
 
   const filteredProducts = useMemo(() => {
     let result = mockProducts;
@@ -85,18 +97,50 @@ const Shop = () => {
             ))}
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 relative" ref={sortRef}>
             <span className="text-sm uppercase tracking-widest text-gray-500">Sort By</span>
-            <select
-              value={sortBy}
-              onChange={(e) => setSortBy(e.target.value)}
-              className="bg-transparent border-b border-gray-300 py-2 pr-8 text-sm focus:outline-none focus:border-text text-text font-light"
+            <button 
+              onClick={() => setIsSortOpen(!isSortOpen)}
+              className="flex items-center gap-2 bg-transparent border-b border-gray-300 py-2 text-sm focus:outline-none focus:border-text text-text font-light w-48 justify-between"
             >
-              <option value="featured">Featured</option>
-              <option value="newest">Newest Arrivals</option>
-              <option value="price-high">Price: High to Low</option>
-              <option value="price-low">Price: Low to High</option>
-            </select>
+              {sortBy === 'featured' && 'Featured'}
+              {sortBy === 'newest' && 'Newest Arrivals'}
+              {sortBy === 'price-high' && 'Price: High to Low'}
+              {sortBy === 'price-low' && 'Price: Low to High'}
+              <ChevronDown className="h-4 w-4 text-gray-400" />
+            </button>
+
+            <AnimatePresence>
+              {isSortOpen && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: 10 }}
+                  className="absolute right-0 top-full mt-1 w-48 bg-white border border-gray-200 shadow-xl z-30"
+                >
+                  <ul className="py-2 text-sm font-light text-text">
+                    {[
+                      { id: 'featured', label: 'Featured' },
+                      { id: 'newest', label: 'Newest Arrivals' },
+                      { id: 'price-high', label: 'Price: High to Low' },
+                      { id: 'price-low', label: 'Price: Low to High' },
+                    ].map(option => (
+                      <li key={option.id}>
+                        <button 
+                          className={`w-full text-left px-4 py-2 hover:bg-primary transition-colors ${sortBy === option.id ? 'font-medium bg-gray-50' : ''}`}
+                          onClick={() => {
+                            setSortBy(option.id);
+                            setIsSortOpen(false);
+                          }}
+                        >
+                          {option.label}
+                        </button>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.div>
+              )}
+            </AnimatePresence>
           </div>
         </div>
 
