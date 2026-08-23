@@ -118,6 +118,66 @@ export const mockProducts = [
     image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?auto=format&fit=crop&q=80&w=1000",
     features: ["Platinum setting", "2.0 Carat Total Weight", "Conflict-free diamonds"],
     isBestSeller: true
+  },
+  {
+    id: "13",
+    name: "Camel Hair Trench Coat",
+    category: "Clothing",
+    price: 2850,
+    description: "A timeless tailored trench coat crafted from exceptionally soft camel hair.",
+    image: "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?auto=format&fit=crop&q=80&w=1000",
+    features: ["100% Camel Hair", "Double-breasted", "Horn buttons"],
+    isBestSeller: true
+  },
+  {
+    id: "14",
+    name: "Leather Weekender Bag",
+    category: "Bags",
+    price: 1950,
+    description: "Spacious and durable duffel bag for the modern traveler, made from full-grain calfskin.",
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&q=80&w=1000",
+    features: ["Full-grain calfskin", "Brass hardware", "Adjustable strap"],
+    isBestSeller: false
+  },
+  {
+    id: "15",
+    name: "Suede Chelsea Boots",
+    category: "Shoes",
+    price: 680,
+    description: "Versatile and comfortable suede Chelsea boots with a slim profile and elastic side panels.",
+    image: "https://images.unsplash.com/photo-1638247025967-b4e38f787b76?auto=format&fit=crop&q=80&w=1000",
+    features: ["Italian suede", "Leather lining", "Crepe sole"],
+    isBestSeller: false
+  },
+  {
+    id: "16",
+    name: "Sapphire Cocktail Ring",
+    category: "Jewelry",
+    price: 8500,
+    description: "Stunning cocktail ring featuring a deep blue cushion-cut sapphire surrounded by diamonds.",
+    image: "https://images.unsplash.com/photo-1605100804763-247f67b8548e?auto=format&fit=crop&q=80&w=1000",
+    features: ["18k White Gold", "4.5ct Sapphire", "Pave diamond halo"],
+    isBestSeller: false
+  },
+  {
+    id: "17",
+    name: "Slim Fit Wool Trousers",
+    category: "Clothing",
+    price: 490,
+    description: "Impeccably tailored slim fit trousers cut from premium Italian wool.",
+    image: "https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?auto=format&fit=crop&q=80&w=1000",
+    features: ["100% Virgin Wool", "Unfinished hem", "Side adjusters"],
+    isBestSeller: false
+  },
+  {
+    id: "18",
+    name: "Minimalist Automatic Watch",
+    category: "Watches",
+    price: 3400,
+    description: "Elegant automatic dress watch with a clean white dial and black leather strap.",
+    image: "https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?auto=format&fit=crop&q=80&w=1000",
+    features: ["Swiss automatic movement", "38mm case", "Alligator strap"],
+    isBestSeller: false
   }
 ];
 
