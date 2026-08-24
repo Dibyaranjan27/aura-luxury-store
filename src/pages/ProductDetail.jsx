@@ -3,14 +3,17 @@ import { useParams, useNavigate, Link } from 'react-router-dom';
 import { mockProducts } from '../data/mockData';
 import { motion } from 'framer-motion';
 import useWishlistStore from '../store/wishlistStore';
+import useCartStore from '../store/cartStore';
+import ProductCard from '../components/Product/ProductCard';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
   
-  const { items, addItem, removeItem } = useWishlistStore();
-  const isInWishlist = product && items.some(item => item.id === product.id);
+  const { items: wishlistItems, addItem: addWishlistItem, removeItem: removeWishlistItem } = useWishlistStore();
+  const { addItem: addCartItem } = useCartStore();
+  const isInWishlist = product && wishlistItems.some(item => item.id === product.id);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -87,7 +90,7 @@ const ProductDetail = () => {
               <button 
                 className="flex-1 bg-text text-white py-4 px-8 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium"
                 onClick={() => {
-                  alert('Added to cart!');
+                  addCartItem(product, 1);
                 }}
               >
                 Add to Cart
@@ -95,8 +98,8 @@ const ProductDetail = () => {
               <button 
                 className="w-14 h-14 border border-gray-200 flex items-center justify-center hover:border-text transition-colors duration-300"
                 onClick={() => {
-                  if (isInWishlist) removeItem(product.id);
-                  else addItem(product);
+                  if (isInWishlist) removeWishlistItem(product.id);
+                  else addWishlistItem(product);
                 }}
                 title="Toggle Wishlist"
               >
@@ -143,19 +146,7 @@ const ProductDetail = () => {
               .filter(p => p.category === product.category && p.id !== product.id)
               .slice(0, 4)
               .map(related => (
-                <Link to={`/product/${related.id}`} key={related.id} className="group block">
-                  <div className="relative h-64 overflow-hidden bg-primary mb-4">
-                    <img 
-                      src={related.image} 
-                      alt={related.name} 
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                    />
-                  </div>
-                  <div className="text-center">
-                    <h3 className="font-serif text-sm text-text mb-1 line-clamp-1">{related.name}</h3>
-                    <p className="text-sm font-medium text-accent">${related.price.toLocaleString()}</p>
-                  </div>
-                </Link>
+                <ProductCard key={related.id} product={related} />
               ))}
           </div>
         </div>

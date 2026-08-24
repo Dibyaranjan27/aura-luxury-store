@@ -1,16 +1,12 @@
 import { Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X } from 'lucide-react';
-import { mockProducts } from '../../data/mockData';
+import useCartStore from '../../store/cartStore';
 
 const CartDrawer = ({ isOpen, onClose }) => {
-  // Mock cart items using the first two products
-  const cartItems = [
-    { ...mockProducts[0], quantity: 1 },
-    { ...mockProducts[1], quantity: 2 }
-  ];
+  const { items: cartItems, removeItem, updateQuantity, getCartTotal } = useCartStore();
 
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const subtotal = getCartTotal();
   const shipping = 0; // Complimentary shipping
   const total = subtotal + shipping;
 
@@ -65,11 +61,23 @@ const CartDrawer = ({ isOpen, onClose }) => {
                         
                         <div className="flex justify-between items-center mt-2">
                           <div className="flex items-center border border-gray-300">
-                            <button className="px-2 py-1 text-gray-500 hover:text-text transition-colors text-xs">-</button>
+                            <button 
+                              onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                              className="px-2 py-1 text-gray-500 hover:text-text transition-colors text-xs"
+                            >-</button>
                             <span className="px-3 py-1 text-xs font-medium">{item.quantity}</span>
-                            <button className="px-2 py-1 text-gray-500 hover:text-text transition-colors text-xs">+</button>
+                            <button 
+                              onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                              className="px-2 py-1 text-gray-500 hover:text-text transition-colors text-xs"
+                            >+</button>
                           </div>
-                          <p className="font-medium text-sm text-accent">${item.price.toLocaleString()}</p>
+                          <div className="flex flex-col items-end gap-1">
+                            <p className="font-medium text-sm text-accent">${(item.price * item.quantity).toLocaleString()}</p>
+                            <button 
+                              onClick={() => removeItem(item.id)}
+                              className="text-[10px] uppercase tracking-wider text-gray-400 hover:text-red-600 transition-colors"
+                            >Remove</button>
+                          </div>
                         </div>
                       </div>
                     </div>
