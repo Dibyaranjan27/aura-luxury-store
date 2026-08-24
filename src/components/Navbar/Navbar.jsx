@@ -69,9 +69,6 @@ function Navbar() {
             <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
               <Search className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
-              <User className="h-5 w-5" strokeWidth={1.5} />
-            </button>
             <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors">
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
             </button>
@@ -120,6 +117,12 @@ function Navbar() {
               >
                 Wishlist
               </Link>
+              <button
+                onClick={() => { setIsAuthOpen(true); setIsOpen(false); }}
+                className="w-full block px-3 py-4 text-base uppercase tracking-widest text-center text-gray-600"
+              >
+                My Account
+              </button>
             </div>
           </motion.div>
         )}
