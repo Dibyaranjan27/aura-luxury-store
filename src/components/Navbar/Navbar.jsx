@@ -1,10 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, ShoppingBag, X, User, Heart, Search } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AuthDrawer from '../Auth/AuthDrawer';
 import CartDrawer from '../Cart/CartDrawer';
 import SearchBar from './SearchBar';
+import useCartStore from '../../store/cartStore';
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -12,6 +13,7 @@ function Navbar() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const location = useLocation();
+  const cartCount = useCartStore(state => state.getCartCount());
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -61,6 +63,11 @@ function Navbar() {
             </Link>
             <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors relative">
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-medium">
+                  {cartCount}
+                </span>
+              )}
             </button>
           </div>
 
@@ -69,11 +76,13 @@ function Navbar() {
             <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
               <Search className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
-              <User className="h-5 w-5" strokeWidth={1.5} />
-            </button>
-            <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors">
+            <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors relative">
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-medium">
+                  {cartCount}
+                </span>
+              )}
             </button>
             <button
               onClick={toggleMenu}
@@ -120,6 +129,12 @@ function Navbar() {
               >
                 Wishlist
               </Link>
+              <button
+                onClick={() => { setIsAuthOpen(true); setIsOpen(false); }}
+                className="w-full block px-3 py-4 text-base uppercase tracking-widest text-center text-gray-600"
+              >
+                My Account
+              </button>
             </div>
           </motion.div>
         )}

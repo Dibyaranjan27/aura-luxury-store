@@ -1,15 +1,11 @@
 import { Link } from 'react-router-dom';
-import { mockProducts } from '../data/mockData';
 import { motion } from 'framer-motion';
+import useCartStore from '../store/cartStore';
 
 const Cart = () => {
-  // Mock cart items using the first two products
-  const cartItems = [
-    { ...mockProducts[0], quantity: 1 },
-    { ...mockProducts[1], quantity: 2 }
-  ];
+  const { items: cartItems, removeItem, updateQuantity, getCartTotal } = useCartStore();
 
-  const subtotal = cartItems.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+  const subtotal = getCartTotal();
   const shipping = 0; // Complimentary shipping
   const total = subtotal + shipping;
 
@@ -53,11 +49,20 @@ const Cart = () => {
                     
                     <div className="flex justify-between items-center mt-4 sm:mt-0">
                       <div className="flex items-center border border-gray-300">
-                        <button className="px-3 py-1 text-gray-500 hover:text-text transition-colors">-</button>
+                        <button 
+                          onClick={() => updateQuantity(item.id, Math.max(1, item.quantity - 1))}
+                          className="px-3 py-1 text-gray-500 hover:text-text transition-colors"
+                        >-</button>
                         <span className="px-4 py-1 text-sm font-medium">{item.quantity}</span>
-                        <button className="px-3 py-1 text-gray-500 hover:text-text transition-colors">+</button>
+                        <button 
+                          onClick={() => updateQuantity(item.id, item.quantity + 1)}
+                          className="px-3 py-1 text-gray-500 hover:text-text transition-colors"
+                        >+</button>
                       </div>
-                      <button className="text-sm text-gray-500 underline hover:text-red-700 transition-colors">
+                      <button 
+                        onClick={() => removeItem(item.id)}
+                        className="text-sm text-gray-500 underline hover:text-red-700 transition-colors"
+                      >
                         Remove
                       </button>
                     </div>
