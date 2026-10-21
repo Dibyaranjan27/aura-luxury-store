@@ -1,31 +1,68 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate, Link } from 'react-router-dom';
-import { mockProducts } from '../data/mockData';
+import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { Heart, ShoppingBag, ShieldCheck, Truck, RotateCcw, Loader2 } from 'lucide-react';
 import useWishlistStore from '../store/wishlistStore';
 import useCartStore from '../store/cartStore';
 import ProductCard from '../components/Product/ProductCard';
+import { getProductById, getProducts } from '../services/api';
 
 const ProductDetail = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const [product, setProduct] = useState(null);
+  const [relatedProducts, setRelatedProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   
   const { items: wishlistItems, addItem: addWishlistItem, removeItem: removeWishlistItem } = useWishlistStore();
   const { addItem: addCartItem } = useCartStore();
-  const isInWishlist = product && wishlistItems.some(item => item.id === product.id);
+
+  const productId = product ? (product.id || product._id) : null;
+  const isInWishlist = productId && wishlistItems.some(item => (item.id || item._id) === productId);
 
   useEffect(() => {
     window.scrollTo(0, 0);
-    const foundProduct = mockProducts.find(p => p.id === id);
-    if (foundProduct) {
-      setProduct(foundProduct);
-    } else {
-      navigate('/shop');
-    }
+    let isMounted = true;
+
+    const loadProduct = async () => {
+      setIsLoading(true);
+      const foundProduct = await getProductById(id);
+      if (isMounted) {
+        if (foundProduct) {
+          setProduct(foundProduct);
+          setIsLoading(false);
+
+          // Load related products by category
+          const categoryProducts = await getProducts({ category: foundProduct.category });
+          if (isMounted) {
+            const currentId = foundProduct.id || foundProduct._id;
+            setRelatedProducts(
+              categoryProducts
+                .filter(p => (p.id || p._id) !== currentId)
+                .slice(0, 4)
+            );
+          }
+        } else {
+          navigate('/shop');
+        }
+      }
+    };
+
+    loadProduct();
+
+    return () => {
+      isMounted = false;
+    };
   }, [id, navigate]);
 
-  if (!product) return <div className="min-h-screen bg-background pt-24 text-center">Loading...</div>;
+  if (isLoading || !product) {
+    return (
+      <div className="min-h-screen bg-background pt-32 flex flex-col items-center justify-center text-gray-400">
+        <Loader2 className="h-8 w-8 animate-spin mb-4 text-accent" />
+        <p className="font-light tracking-widest text-xs uppercase">Unveiling Masterpiece...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-background min-h-screen pt-24 pb-20 px-4 md:px-8 font-sans">
@@ -39,7 +76,7 @@ const ProductDetail = () => {
             transition={{ duration: 0.6 }}
             className="w-full md:w-1/2"
           >
-            <div className="aspect-[4/5] overflow-hidden bg-primary relative">
+            <div className="aspect-[4/5] overflow-hidden bg-primary relative shadow-sm">
               <img 
                 src={product.image} 
                 alt={product.name} 
@@ -60,61 +97,71 @@ const ProductDetail = () => {
             transition={{ duration: 0.6, delay: 0.2 }}
             className="w-full md:w-1/2 flex flex-col justify-center"
           >
-            <div className="mb-2">
-              <span className="text-xs text-gray-500 uppercase tracking-widest">{product.category}</span>
-            </div>
+            <p className="text-xs text-gray-500 uppercase tracking-widest mb-3">{product.category}</p>
+            <h1 className="text-3xl md:text-5xl font-serif font-bold text-text mb-4 leading-tight">{product.name}</h1>
+            <p className="text-2xl text-accent mb-8 font-serif">${product.price.toLocaleString()}</p>
             
-            <h1 className="text-3xl md:text-5xl font-serif font-bold text-text mb-6 leading-tight">
-              {product.name}
-            </h1>
-            
-            <p className="text-2xl text-accent font-medium mb-8">
-              ${product.price.toLocaleString()}
+            <p className="text-gray-600 font-light leading-relaxed mb-8 text-base">
+              {product.description}
             </p>
-            
-            <div className="prose prose-sm text-gray-600 font-light mb-8 leading-relaxed">
-              <p>{product.description}</p>
+
+            {/* Features */}
+            {product.features && product.features.length > 0 && (
+              <div className="mb-10 border-t border-b border-gray-100 py-6">
+                <h3 className="text-xs uppercase tracking-widest text-text font-semibold mb-4">Highlights</h3>
+                <ul className="space-y-2">
+                  {product.features.map((feature, idx) => (
+                    <li key={idx} className="text-sm text-gray-500 font-light flex items-center">
+                      <span className="w-1.5 h-1.5 bg-accent rounded-full mr-3"></span>
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {/* Actions */}
+            <div className="flex gap-4 mb-10">
+              <button 
+                onClick={() => addCartItem(product, 1)}
+                className="flex-1 bg-text text-white py-4 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium text-sm flex items-center justify-center gap-3"
+              >
+                <ShoppingBag className="h-4 w-4" />
+                Add to Bag
+              </button>
+              
+              <button 
+                onClick={() => {
+                  if (isInWishlist) {
+                    removeWishlistItem(productId);
+                  } else {
+                    addWishlistItem(product);
+                  }
+                }}
+                className={`p-4 border transition-colors duration-300 ${
+                  isInWishlist 
+                    ? 'border-accent bg-accent/5 text-accent' 
+                    : 'border-gray-200 text-gray-400 hover:border-text hover:text-text'
+                }`}
+                title={isInWishlist ? "Remove from Wishlist" : "Add to Wishlist"}
+              >
+                <Heart className={`h-5 w-5 ${isInWishlist ? 'fill-accent' : ''}`} />
+              </button>
             </div>
 
-            {/* Features List */}
-            <div className="mb-10">
-              <h3 className="text-sm font-semibold uppercase tracking-wider text-text mb-4">Highlights</h3>
-              <ul className="list-disc list-inside text-gray-600 font-light space-y-2">
-                {product.features.map((feature, idx) => (
-                  <li key={idx}>{feature}</li>
-                ))}
-              </ul>
-            </div>
-
-            <div className="flex gap-4">
-              <button 
-                className="flex-1 bg-text text-white py-4 px-8 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium"
-                onClick={() => {
-                  addCartItem(product, 1);
-                }}
-              >
-                Add to Cart
-              </button>
-              <button 
-                className="w-14 h-14 border border-gray-200 flex items-center justify-center hover:border-text transition-colors duration-300"
-                onClick={() => {
-                  if (isInWishlist) removeWishlistItem(product.id);
-                  else addWishlistItem(product);
-                }}
-                title="Toggle Wishlist"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" fill={isInWishlist ? "currentColor" : "none"} viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`w-6 h-6 ${isInWishlist ? "text-accent" : "text-gray-500"}`}>
-                  <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                </svg>
-              </button>
-            </div>
-            
-            {/* Delivery Info */}
-            <div className="mt-12 pt-8 border-t border-gray-200">
-              <div className="flex flex-col gap-3 text-sm text-gray-500 font-light">
-                <p>✓ Complimentary standard delivery on all orders.</p>
-                <p>✓ Complimentary returns within 30 days.</p>
-                <p>✓ Signature packaging included.</p>
+            {/* Guarantees */}
+            <div className="grid grid-cols-3 gap-4 border-t border-gray-100 pt-6 text-center">
+              <div className="flex flex-col items-center">
+                <Truck className="h-5 w-5 text-gray-400 mb-2" strokeWidth={1.5} />
+                <span className="text-[10px] uppercase tracking-wider text-gray-500">Complimentary Shipping</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <RotateCcw className="h-5 w-5 text-gray-400 mb-2" strokeWidth={1.5} />
+                <span className="text-[10px] uppercase tracking-wider text-gray-500">30-Day Returns</span>
+              </div>
+              <div className="flex flex-col items-center">
+                <ShieldCheck className="h-5 w-5 text-gray-400 mb-2" strokeWidth={1.5} />
+                <span className="text-[10px] uppercase tracking-wider text-gray-500">Authenticity Guaranteed</span>
               </div>
             </div>
 
@@ -139,17 +186,16 @@ const ProductDetail = () => {
         </div>
 
         {/* Related Products */}
-        <div className="mt-24 border-t border-gray-200 pt-16">
-          <h2 className="text-2xl font-serif text-text mb-10 text-center">You May Also Like</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-            {mockProducts
-              .filter(p => p.category === product.category && p.id !== product.id)
-              .slice(0, 4)
-              .map(related => (
-                <ProductCard key={related.id} product={related} />
+        {relatedProducts.length > 0 && (
+          <div className="mt-24 border-t border-gray-200 pt-16">
+            <h2 className="text-2xl font-serif text-text mb-10 text-center">You May Also Like</h2>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
+              {relatedProducts.map(related => (
+                <ProductCard key={related.id || related._id} product={related} />
               ))}
+            </div>
           </div>
-        </div>
+        )}
 
       </div>
     </div>

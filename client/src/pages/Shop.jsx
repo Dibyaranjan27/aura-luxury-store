@@ -1,22 +1,27 @@
-import { useState, useMemo, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { Link, useSearchParams } from 'react-router-dom';
-import { mockProducts, categories } from '../data/mockData';
 import { motion, AnimatePresence } from 'framer-motion';
-import { X, ChevronDown } from 'lucide-react';
+import { X, ChevronDown, Loader2 } from 'lucide-react';
 import ProductCard from '../components/Product/ProductCard';
 import useCartStore from '../store/cartStore';
+import { getProducts, getCategories } from '../services/api';
 
 const Shop = () => {
   const { addItem } = useCartStore();
   const [searchParams, setSearchParams] = useSearchParams();
   const initialCategory = searchParams.get('category') || 'All';
   const searchQuery = searchParams.get('search') || '';
+
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [categories, setCategories] = useState(['All']);
+  const [products, setProducts] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [quickViewProduct, setQuickViewProduct] = useState(null);
   const [sortBy, setSortBy] = useState('featured');
   const [isSortOpen, setIsSortOpen] = useState(false);
   const sortRef = useRef(null);
 
+  // Close sorting dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (e) => {
       if (sortRef.current && !sortRef.current.contains(e.target)) {
@@ -27,30 +32,42 @@ const Shop = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  const filteredProducts = useMemo(() => {
-    let result = mockProducts;
-    
-    if (activeCategory !== 'All') {
-      result = result.filter(p => p.category === activeCategory);
-    }
-    
-    if (searchQuery) {
-      const lowerQuery = searchQuery.toLowerCase();
-      result = result.filter(p => 
-        p.name.toLowerCase().includes(lowerQuery) || 
-        p.description.toLowerCase().includes(lowerQuery)
-      );
-    }
-    
-    if (sortBy === 'price-low') {
-      result = [...result].sort((a, b) => a.price - b.price);
-    } else if (sortBy === 'price-high') {
-      result = [...result].sort((a, b) => b.price - a.price);
-    } else if (sortBy === 'newest') {
-      result = [...result].reverse();
-    }
+  // Fetch available categories once on mount
+  useEffect(() => {
+    const fetchCats = async () => {
+      const data = await getCategories();
+      setCategories(data);
+    };
+    fetchCats();
+  }, []);
 
-    return result;
+  // Sync activeCategory if URL param changes
+  useEffect(() => {
+    const cat = searchParams.get('category') || 'All';
+    setActiveCategory(cat);
+  }, [searchParams]);
+
+  // Fetch filtered & sorted products from API
+  useEffect(() => {
+    let isMounted = true;
+    const fetchProductsData = async () => {
+      setIsLoading(true);
+      const data = await getProducts({
+        category: activeCategory,
+        search: searchQuery,
+        sort: sortBy,
+      });
+      if (isMounted) {
+        setProducts(data);
+        setIsLoading(false);
+      }
+    };
+
+    fetchProductsData();
+
+    return () => {
+      isMounted = false;
+    };
   }, [activeCategory, searchQuery, sortBy]);
 
   const handleCategoryChange = (category) => {
@@ -147,28 +164,38 @@ const Shop = () => {
           </div>
         </div>
 
-        {/* Product Grid */}
-        <motion.div 
-          layout
-          className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
-        >
-          {filteredProducts.map((product) => (
-            <ProductCard 
-              key={product.id} 
-              product={product} 
-              onQuickView={setQuickViewProduct} 
-            />
-          ))}
-        </motion.div>
-
-        {filteredProducts.length === 0 && (
-          <div className="text-center py-20 text-gray-500">
-            <p>No products found in this category.</p>
+        {/* Loading State or Product Grid */}
+        {isLoading ? (
+          <div className="flex flex-col items-center justify-center py-28 text-gray-400">
+            <Loader2 className="h-8 w-8 animate-spin mb-4 text-accent" />
+            <p className="font-light tracking-widest text-xs uppercase">Curating Collection...</p>
           </div>
+        ) : (
+          <>
+            <motion.div 
+              layout
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8"
+            >
+              {products.map((product) => (
+                <ProductCard 
+                  key={product.id || product._id} 
+                  product={product} 
+                  onQuickView={setQuickViewProduct} 
+                />
+              ))}
+            </motion.div>
+
+            {products.length === 0 && (
+              <div className="text-center py-20 text-gray-500">
+                <p>No products found in this category.</p>
+              </div>
+            )}
+          </>
         )}
 
       </div>
 
+      {/* Quick View Modal */}
       <AnimatePresence>
         {quickViewProduct && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-6">
@@ -206,7 +233,7 @@ const Shop = () => {
                   {quickViewProduct.description}
                 </p>
                 <Link 
-                  to={`/product/${quickViewProduct.id}`}
+                  to={`/product/${quickViewProduct.id || quickViewProduct._id}`}
                   className="block text-center w-full bg-text text-white py-4 uppercase tracking-widest hover:bg-accent transition-colors duration-300 font-medium mb-4"
                 >
                   View Full Details

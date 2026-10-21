@@ -1,9 +1,24 @@
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { mockProducts } from '../data/mockData';
+import { getProducts } from '../services/api';
 
 const Home = () => {
-  const bestSellers = mockProducts.filter(product => product.isBestSeller).slice(0, 4);
+  const [bestSellers, setBestSellers] = useState([]);
+
+  useEffect(() => {
+    let isMounted = true;
+    const fetchBestSellers = async () => {
+      const data = await getProducts({ isBestSeller: true });
+      if (isMounted) {
+        setBestSellers(data.slice(0, 4));
+      }
+    };
+    fetchBestSellers();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   return (
     <div className="bg-background text-text font-sans pt-16">
@@ -48,7 +63,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Featured Categories */}
+      {/* Featured Collections */}
       <section className="py-20 px-4 md:px-8 max-w-7xl mx-auto">
         <h2 className="text-3xl md:text-4xl font-serif font-bold text-center mb-12">The Collections</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -81,25 +96,28 @@ const Home = () => {
             <Link to="/shop" className="text-accent font-medium hover:underline tracking-wide">View All</Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {bestSellers.map((product) => (
-              <Link to={`/product/${product.id}`} key={product.id} className="group cursor-pointer bg-white overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
-                <div className="relative h-80 overflow-hidden">
-                  <img 
-                    src={product.image} 
-                    alt={product.name} 
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                  <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-md p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
-                    <p className="text-center font-medium text-text uppercase text-sm tracking-wider">Quick View</p>
+            {bestSellers.map((product) => {
+              const productId = product.id || product._id;
+              return (
+                <Link to={`/product/${productId}`} key={productId} className="group cursor-pointer bg-white overflow-hidden shadow-sm hover:shadow-xl transition-shadow duration-300">
+                  <div className="relative h-80 overflow-hidden">
+                    <img 
+                      src={product.image} 
+                      alt={product.name} 
+                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    />
+                    <div className="absolute bottom-0 left-0 w-full bg-white/90 backdrop-blur-md p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                      <p className="text-center font-medium text-text uppercase text-sm tracking-wider">Quick View</p>
+                    </div>
                   </div>
-                </div>
-                <div className="p-5 text-center">
-                  <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">{product.category}</p>
-                  <h3 className="font-serif text-lg text-text mb-2 line-clamp-1">{product.name}</h3>
-                  <p className="font-medium text-accent">${product.price.toLocaleString()}</p>
-                </div>
-              </Link>
-            ))}
+                  <div className="p-5 text-center">
+                    <p className="text-xs text-gray-500 uppercase tracking-widest mb-2">{product.category}</p>
+                    <h3 className="font-serif text-lg text-text mb-2 line-clamp-1">{product.name}</h3>
+                    <p className="font-medium text-accent">${product.price.toLocaleString()}</p>
+                  </div>
+                </Link>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -108,7 +126,7 @@ const Home = () => {
       <section className="py-24 px-4 md:px-8 max-w-4xl mx-auto text-center">
         <h2 className="text-3xl md:text-4xl font-serif font-bold mb-4">Join the Inner Circle</h2>
         <p className="text-gray-600 mb-8 font-light">Subscribe to receive exclusive access to new collections and private events.</p>
-        <form className="flex flex-col sm:flex-row gap-4 justify-center">
+        <form className="flex flex-col sm:flex-row gap-4 justify-center" onSubmit={(e) => e.preventDefault()}>
           <input 
             type="email" 
             placeholder="Email Address" 
@@ -122,30 +140,6 @@ const Home = () => {
             Subscribe
           </button>
         </form>
-      </section>
-
-      {/* Testimonials */}
-      <section className="py-24 bg-primary text-center">
-        <div className="max-w-4xl mx-auto px-4">
-          <h2 className="font-serif text-3xl text-text mb-12">Client Experiences</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="p-6">
-              <div className="text-accent text-lg mb-4">★★★★★</div>
-              <p className="text-gray-600 font-light italic mb-4">"The attention to detail and quality of the materials is unparalleled. Truly a luxury experience."</p>
-              <p className="text-sm font-medium uppercase tracking-widest text-text">- Sophia L.</p>
-            </div>
-            <div className="p-6">
-              <div className="text-accent text-lg mb-4">★★★★★</div>
-              <p className="text-gray-600 font-light italic mb-4">"Impeccable service. My order arrived beautifully packaged and the product exceeded my expectations."</p>
-              <p className="text-sm font-medium uppercase tracking-widest text-text">- Marcus W.</p>
-            </div>
-            <div className="p-6">
-              <div className="text-accent text-lg mb-4">★★★★★</div>
-              <p className="text-gray-600 font-light italic mb-4">"Aura has become my definitive destination for luxury accessories. Their curation is flawless."</p>
-              <p className="text-sm font-medium uppercase tracking-widest text-text">- Elena R.</p>
-            </div>
-          </div>
-        </div>
       </section>
     </div>
   );
