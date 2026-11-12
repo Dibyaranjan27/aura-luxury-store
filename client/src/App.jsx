@@ -10,11 +10,14 @@ import About from './pages/About';
 import Wishlist from './pages/Wishlist';
 import Checkout from './pages/Checkout';
 import Account from './pages/Account';
+import NotFound from './pages/NotFound';
 import Footer from './components/Footer/Footer';
 import FloatingActions from './components/FloatingActions';
+import ConciergeDrawer from './components/Concierge/ConciergeDrawer';
 
 function App() {
   const [showScrollTop, setShowScrollTop] = useState(false);
+  const [isConciergeOpen, setIsConciergeOpen] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -43,11 +46,20 @@ function App() {
               <Route path="/wishlist" element={<Wishlist />} />
               <Route path="/checkout" element={<Checkout />} />
               <Route path="/account" element={<Account />} />
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </main>
           
-          <Footer />
-          <FloatingActions showScrollTop={showScrollTop} scrollToTop={scrollToTop} />
+          <Footer onOpenConcierge={() => setIsConciergeOpen(true)} />
+          <FloatingActions 
+            showScrollTop={showScrollTop} 
+            scrollToTop={scrollToTop} 
+            onOpenConcierge={() => setIsConciergeOpen(true)}
+          />
+          <ConciergeDrawer 
+            isOpen={isConciergeOpen} 
+            onClose={() => setIsConciergeOpen(false)} 
+          />
         </div>
       </Router>
     </AuthProvider>

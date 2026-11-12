@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, ShoppingBag, X, User, Heart, Search } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
 import AuthDrawer from '../Auth/AuthDrawer';
 import CartDrawer from '../Cart/CartDrawer';
 import SearchBar from './SearchBar';
@@ -10,10 +10,19 @@ import useCartStore from '../../store/cartStore';
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isLocalCartOpen, setIsLocalCartOpen] = useState(false);
   const [isSearchVisible, setIsSearchVisible] = useState(false);
   const location = useLocation();
+  
   const cartCount = useCartStore(state => state.getCartCount());
+  const isGlobalCartOpen = useCartStore(state => state.isDrawerOpen);
+  const closeGlobalCart = useCartStore(state => state.closeDrawer);
+
+  const isCartDrawerActive = isLocalCartOpen || isGlobalCartOpen;
+  const handleCloseCart = () => {
+    setIsLocalCartOpen(false);
+    closeGlobalCart();
+  };
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -52,16 +61,32 @@ function Navbar() {
 
           {/* Icons */}
           <div className="hidden md:flex items-center space-x-6 relative">
-            <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
-              <Search className="h-5 w-5" title="Search" strokeWidth={1.5} />
+            <button 
+              onClick={() => setIsSearchVisible(true)} 
+              className="text-gray-500 hover:text-text transition-colors"
+              title="Search"
+            >
+              <Search className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <button onClick={() => setIsAuthOpen(true)} className="text-gray-500 hover:text-text transition-colors">
-              <User className="h-5 w-5" title="Sign In / Register" strokeWidth={1.5} />
+            <button 
+              onClick={() => setIsAuthOpen(true)} 
+              className="text-gray-500 hover:text-text transition-colors"
+              title="Sign In / Register"
+            >
+              <User className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <Link to="/wishlist" className="text-gray-500 hover:text-text transition-colors">
-              <Heart className="h-5 w-5" title="Wishlist" strokeWidth={1.5} />
+            <Link 
+              to="/wishlist" 
+              className="text-gray-500 hover:text-text transition-colors"
+              title="Wishlist"
+            >
+              <Heart className="h-5 w-5" strokeWidth={1.5} />
             </Link>
-            <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors relative">
+            <button 
+              onClick={() => setIsLocalCartOpen(true)} 
+              className="text-gray-500 hover:text-text transition-colors relative"
+              title="Shopping Bag"
+            >
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-medium">
@@ -73,10 +98,18 @@ function Navbar() {
 
           {/* Mobile menu button */}
           <div className="md:hidden flex items-center gap-4">
-            <button onClick={() => setIsSearchVisible(true)} className="text-gray-500 hover:text-text transition-colors">
+            <button 
+              onClick={() => setIsSearchVisible(true)} 
+              className="text-gray-500 hover:text-text transition-colors"
+              title="Search"
+            >
               <Search className="h-5 w-5" strokeWidth={1.5} />
             </button>
-            <button onClick={() => setIsCartOpen(true)} className="text-gray-500 hover:text-text transition-colors relative">
+            <button 
+              onClick={() => setIsLocalCartOpen(true)} 
+              className="text-gray-500 hover:text-text transition-colors relative"
+              title="Shopping Bag"
+            >
               <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
               {cartCount > 0 && (
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full font-medium">
@@ -87,6 +120,7 @@ function Navbar() {
             <button
               onClick={toggleMenu}
               className="text-gray-500 hover:text-text focus:outline-none"
+              title="Toggle Menu"
             >
               {isOpen ? (
                 <X className="h-6 w-6" strokeWidth={1.5} />
@@ -143,7 +177,7 @@ function Navbar() {
       {/* Modals & Drawers */}
       <AnimatePresence>
         {isAuthOpen && <AuthDrawer isOpen={isAuthOpen} onClose={() => setIsAuthOpen(false)} />}
-        {isCartOpen && <CartDrawer isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />}
+        {isCartDrawerActive && <CartDrawer isOpen={isCartDrawerActive} onClose={handleCloseCart} />}
         {isSearchVisible && <SearchBar isVisible={isSearchVisible} onClose={() => setIsSearchVisible(false)} />}
       </AnimatePresence>
     </nav>
