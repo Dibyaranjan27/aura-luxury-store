@@ -60,7 +60,7 @@ export const getCategories = async () => {
     if (!res.ok) throw new Error('Categories fetch failed');
     const data = await res.json();
     return data.length > 0 ? data : fallbackCategories;
-  } catch (err) {
+  } catch {
     return fallbackCategories;
   }
 };

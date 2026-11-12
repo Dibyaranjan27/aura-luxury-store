@@ -1,6 +1,6 @@
 import { MessageCircle, ChevronUp } from "lucide-react";
 
-const FloatingActions = ({ showScrollTop, scrollToTop }) => {
+const FloatingActions = ({ showScrollTop, scrollToTop, onOpenConcierge }) => {
   return (
     <>
       {/* Scroll To Top Button */}
@@ -16,11 +16,11 @@ const FloatingActions = ({ showScrollTop, scrollToTop }) => {
 
       {/* Live Chat Floating Button */}
       <button 
-        onClick={() => alert('Live Chat would open here')}
-        className="fixed bottom-8 right-8 z-40 bg-text text-white w-14 h-14 flex items-center justify-center rounded-full shadow-2xl hover:bg-accent transition-colors duration-300"
-        title="Need Help?"
+        onClick={onOpenConcierge}
+        className="fixed bottom-8 right-8 z-40 bg-text text-white w-14 h-14 flex items-center justify-center rounded-full shadow-2xl hover:bg-accent transition-colors duration-300 group"
+        title="Aura Client Concierge"
       >
-        <MessageCircle className="h-6 w-6" strokeWidth={1.5} />
+        <MessageCircle className="h-6 w-6 group-hover:scale-110 transition-transform" strokeWidth={1.5} />
       </button>
     </>
   );

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { ShieldCheck, Lock, Loader2, ArrowLeft } from 'lucide-react';
-import useCartStore from '../store/cartStore';
+import useCartStore, { getCartItemId } from '../store/cartStore';
 import { useAuth } from '../contexts/AuthContext';
 import { createOrder } from '../services/api';
 
@@ -15,9 +15,9 @@ const Checkout = () => {
   const [confirmedOrder, setConfirmedOrder] = useState(null);
 
   const [formData, setFormData] = useState({
-    firstName: user?.displayName ? user.displayName.split(' ')[0] : '',
-    lastName: user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : '',
-    email: user?.email || '',
+    firstName: user?.displayName ? user.displayName.split(' ')[0] : 'Eleanor',
+    lastName: user?.displayName ? user.displayName.split(' ').slice(1).join(' ') : 'Vance',
+    email: user?.email || 'eleanor.vance@aura.luxury',
     address: '123 Luxury Avenue, Penthouse B',
     city: 'New York',
     postal: '10001',
@@ -58,6 +58,10 @@ const Checkout = () => {
           priceAtPurchase: item.price,
           quantity: item.quantity,
           image: item.image,
+          variant: {
+            size: item.selectedSize || null,
+            color: item.selectedColor || null,
+          },
         })),
         totalAmount: cartTotal,
       };
@@ -219,7 +223,7 @@ const Checkout = () => {
 
                   <div className="p-4 bg-primary/60 border border-gray-200 text-xs text-gray-600 font-light flex items-center gap-3">
                     <ShieldCheck className="h-5 w-5 text-accent flex-shrink-0" />
-                    <span>Test payments are enabled. You can use standard test card credentials.</span>
+                    <span>Test payments are enabled. Standard luxury concierge processing active.</span>
                   </div>
 
                   <div>
@@ -305,16 +309,24 @@ const Checkout = () => {
               </div>
             ) : (
               <div className="space-y-4 max-h-72 overflow-y-auto pr-2 mb-6">
-                {items.map((item) => (
-                  <div key={item.id || item._id} className="flex gap-4 items-center">
-                    <img src={item.image} alt={item.name} className="w-14 h-14 object-cover bg-primary flex-shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-xs font-serif text-text truncate">{item.name}</p>
-                      <p className="text-[11px] text-gray-400">Qty: {item.quantity}</p>
+                {items.map((item) => {
+                  const key = getCartItemId(item);
+                  return (
+                    <div key={key} className="flex gap-4 items-center">
+                      <img src={item.image} alt={item.name} className="w-14 h-14 object-cover bg-primary flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs font-serif text-text truncate">{item.name}</p>
+                        <p className="text-[11px] text-gray-400">Qty: {item.quantity}</p>
+                        {(item.selectedSize || item.selectedColor) && (
+                          <p className="text-[10px] text-accent">
+                            {[item.selectedSize, item.selectedColor].filter(Boolean).join(' • ')}
+                          </p>
+                        )}
+                      </div>
+                      <p className="text-xs font-medium text-text">${(item.price * item.quantity).toLocaleString()}</p>
                     </div>
-                    <p className="text-xs font-medium text-text">${(item.price * item.quantity).toLocaleString()}</p>
-                  </div>
-                ))}
+                  );
+                })}
               </div>
             )}
 

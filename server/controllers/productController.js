@@ -1,11 +1,17 @@
 import mongoose from 'mongoose';
 import Product from '../models/Product.js';
 
+const isDBConnected = () => mongoose.connection.readyState === 1;
+
 // @desc    Fetch all products with optional filters, search, and sorting
 // @route   GET /api/products
 // @access  Public
 export const getProducts = async (req, res, next) => {
   try {
+    if (!isDBConnected()) {
+      return res.json([]);
+    }
+
     const { category, search, sort, isBestSeller } = req.query;
     const filter = {};
 
@@ -52,6 +58,10 @@ export const getProducts = async (req, res, next) => {
 // @access  Public
 export const getProductById = async (req, res, next) => {
   try {
+    if (!isDBConnected()) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
     const { id } = req.params;
 
     let product = null;
@@ -60,7 +70,6 @@ export const getProductById = async (req, res, next) => {
     }
 
     if (!product) {
-      // Fallback check if searching by name or custom attribute
       product = await Product.findOne({
         $or: [{ _id: mongoose.isValidObjectId(id) ? id : null }, { name: id }],
       });
@@ -81,6 +90,10 @@ export const getProductById = async (req, res, next) => {
 // @access  Public
 export const getCategories = async (req, res, next) => {
   try {
+    if (!isDBConnected()) {
+      return res.json(['All', 'Watches', 'Bags', 'Apparel', 'Jewelry', 'Shoes', 'Accessories']);
+    }
+
     const categories = await Product.distinct('category');
     res.json(['All', ...categories]);
   } catch (error) {

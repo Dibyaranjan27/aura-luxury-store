@@ -2,15 +2,17 @@ import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 
 const ProductCard = ({ product, onQuickView }) => {
+  const productId = product.id || product._id;
+
   return (
     <motion.div
       layout
-      initial={{ opacity: 0, scale: 0.9 }}
+      initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
-      exit={{ opacity: 0, scale: 0.9 }}
-      transition={{ duration: 0.4 }}
+      exit={{ opacity: 0, scale: 0.95 }}
+      transition={{ duration: 0.3 }}
     >
-      <Link to={`/product/${product.id}`} className="group block bg-white h-full border border-gray-100 hover:border-gray-300 transition-colors">
+      <Link to={`/product/${productId}`} className="group block bg-white h-full border border-gray-100 hover:border-gray-300 transition-colors">
         <div className="relative h-80 overflow-hidden bg-primary">
           <img 
             src={product.image} 
